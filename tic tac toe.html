@@ -1,0 +1,187 @@
+<html lang="en">
+	<head>
+	  <meta charset="utf-8">
+	  <title>Tic Tac Toe</title>
+	  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+  	<style>
+		.circle{background-color:red;}
+		.cross{background-color:blue;}
+  		table {
+  			margin-left: 175px;
+  			margin-top: 70px;
+  		}
+			table, td, tr{
+			  border:1px solid black; 
+			}
+
+			td{
+			  width:70px;
+			  height:70px;
+			}
+			
+		</style>
+	</head>
+
+	<body>
+
+	 
+	  <p>Player 1 is Red</br>
+	 	Player 2 is Blue</p>
+	  <!-- use table as gameboard -->
+	  <table id="tictac">
+			<tr>
+				<td id="space1" class="space"></td>
+				<td id="space2" class="space"> </td>
+				<td id="space3" class="space"></td>
+			</tr>
+			<tr>
+				<td id="space4" class="space"></td>
+				<td id="space5" class="space"></td>
+				<td id="space6" class="space"></td>
+			</tr>
+			<tr>
+				<td id="space7" class="space"></td>
+				<td id="space8" class="space"></td>
+				<td id="space9" class="space"></td>
+
+			</tr>
+		</table>
+ <div id="message"></div>
+	</body>
+	<button id="#resetButton" onclick="reset()">Reset</button>
+	<!-- put the business logic of the game in here -->
+	<script>
+		var player = 1;
+		var table = $('#tictac');
+		// message field
+		var message = $('#message');
+		// game over flag to check if game is over
+		var gameOver = 0;
+		// var turn = "";
+
+		$(document).ready(function(){
+			console.log("ready to go!");
+		});
+
+		//two players (switch player when one make move)
+		
+		// player 1 puts circle, player 2 puts cross
+
+		//make a move
+		$('td').click(function() {
+			//check if game is over already?
+			if(gameOver){
+				message.html("Game is Over!, Please click reset");
+			} else {
+			_td = $(this);
+			
+			// check if space is occupied?
+			var state = getState(_td);
+			if (!state){
+				//if space avaiable
+					var check = checkPlayersPattern(player);
+					//display circle/ cross
+					_td.addClass(check).addClass('occupied');
+				//check if someone wins
+					if (checkIfWon(table, check)){
+							message.html("player " + player + "has won");
+						
+					} else if (checkIfTie(table)){
+							// check if game is tied
+							message.html('game is tied');
+					} else {
+							//change player
+						player = changePlayer(player);
+					}
+
+			} else {
+				//if space occupied
+				message.html("Space has already been checked");
+			}
+
+		}
+
+		})
+
+
+
+
+
+		//check space available
+		function getState(td){
+			if (td.hasClass('occupied')){
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+
+		//check players pattern
+		function checkPlayersPattern(player){
+			if (player == 1){
+				return "circle";
+			} else {
+				return "cross";
+			}
+		}
+
+		//change player
+		function changePlayer(player){
+			console.log();
+			if (player == 1){
+				return 2;
+			} else {
+				return 1;
+			}
+		}
+
+		//9 spaces
+
+		//rules of winning
+		function checkIfWon(table, pattern){
+			var winFlag = 0;
+			if((table.find('#space1').hasClass(pattern) && table.find('#space2').hasClass(pattern) && table.find('#space3').hasClass(pattern)) ||
+				(table.find('#space4').hasClass(pattern) && table.find('#space5').hasClass(pattern) && table.find('#space6').hasClass(pattern)) ||
+				(table.find('#space7').hasClass(pattern) && table.find('#space8').hasClass(pattern) && table.find('#space9').hasClass(pattern)) ||
+				(table.find('#space1').hasClass(pattern) && table.find('#space4').hasClass(pattern) && table.find('#space7').hasClass(pattern)) ||
+				(table.find('#space2').hasClass(pattern) && table.find('#space5').hasClass(pattern) && table.find('#space8').hasClass(pattern)) ||
+				(table.find('#space3').hasClass(pattern) && table.find('#space6').hasClass(pattern) && table.find('#space9').hasClass(pattern)) ||
+				(table.find('#space1').hasClass(pattern) && table.find('#space5').hasClass(pattern) && table.find('#space9').hasClass(pattern)) ||
+				(table.find('#space3').hasClass(pattern) && table.find('#space5').hasClass(pattern) && table.find('#space7').hasClass(pattern))
+				) {
+				winFlag = 1;
+				gameOver = 1;
+			} else {
+				winFlag = 0;
+			}
+			// todo other rules
+			return winFlag;
+		}
+
+		//rules of tie(No spaces)
+		function checkIfTie(table){
+				if($('.occupied').length === 9)
+			{
+				gameOver = 1;
+				return 1;
+			} else {
+				console.log()
+				return 0;
+			}
+		}
+
+		function checkAllSpaces(table){
+
+		}
+
+		//start a new game
+		function reset(){
+			$('.space').removeClass('circle occupied').removeClass('cross');
+			player = 1;
+			gameOver = 0;
+			message.html("");
+		}
+	</script>
+
+</html>
+
